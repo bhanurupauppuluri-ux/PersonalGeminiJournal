@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User data isolation rule
+    // Path: /users/{userId}/journals/{journalId}
+    match /users/{userId}/journals/{journalId} {
+      allow read, write, create, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Default deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
